@@ -20,6 +20,11 @@ namespace Week01
 
             set
             {
+                if (Frozen)
+                {
+                    throw new Exception("Error: Can't modify a frozen grade.");
+                }
+
                 if (!IsValidValue(value))
                 {
                     throw new ArgumentException("Error: Invalid grade value.");
@@ -36,7 +41,7 @@ namespace Week01
             {
                 if (frozen && value == false)
                 {
-                    throw new ArgumentException("Error: Cannot unfreeze grade.");
+                    throw new ArgumentException("Error: Can't unfreeze grade.");
                 }
                 this.frozen = value;
             }
@@ -70,11 +75,8 @@ namespace Week01
                 return IsMultipleOf(value, 0.5m);
             }
             return false;
-        }
 
-        private bool IsMultipleOf(decimal value, decimal factor)
-        {
-            return value % factor == 0;
+            bool IsMultipleOf(decimal value, decimal factor) => value % factor == 0;
         }
     }
 }

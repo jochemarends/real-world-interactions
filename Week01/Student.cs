@@ -20,6 +20,8 @@ namespace Week01
         public string FullName => $"{firstName} {lastName}";
         public DateTime BirthDate => birthDate;
         public int StudentNumber => studentNumber;
+        private List<int> ExamCodes => grades.Select(grade => grade.ExamCode).ToList();
+        private List<Grade> FinalGrades => ExamCodes.Select(examCode => HighestGrade(examCode)).ToList();
 
         public Student(string firstName, string lastName, DateTime birthDate, int studentNumber)
         {
@@ -31,9 +33,11 @@ namespace Week01
 
         public void SetGrade(int examCode, decimal value)
         {
-            if (IsResit(examCode))
+            Grade? grade = grades.Find(grade => grade.ExamCode == examCode && !grade.Frozen);
+
+            if (grade is not null)
             {
-                UpdateGrade(examCode, value);
+                grade.Value = value; 
             }
             else
             {
@@ -51,9 +55,9 @@ namespace Week01
 
         public void PrintGrades(DateTime from, DateTime till)
         {
-            Func<Grade, bool> isInPeriod = grade => grade.Date >= from && grade.Date <= till;
+            bool IsInPeriod(Grade grade) => grade.Date >= from && grade.Date <= till;
 
-            foreach (Grade grade in grades.Where(isInPeriod).OrderBy(grade => grade.Date))
+            foreach (Grade grade in grades.Where(IsInPeriod).OrderBy(grade => grade.Date))
             {
                 Console.WriteLine(grade);
             }
@@ -66,35 +70,20 @@ namespace Week01
 
         public decimal GradePointAverage()
         {
-            var examCodes = grades.Select(grade => grade.ExamCode).Distinct();
-            var finalGrades = examCodes.Select(examCode => HighestGrade(examCode));
-            return finalGrades.Average(grade => grade.Value);
+            return FinalGrades.Average(grade => grade.Value);
         }
 
         public override string ToString() => $"{FullName} ({studentNumber})";
 
-        private bool IsResit(int examCode)
-        {
-            return grades.Any(grade => grade.ExamCode == examCode && !grade.Frozen);
-        }
-
-        private void UpdateGrade(int examCode, decimal value)
-        {
-            Grade? grade = GradesFor(examCode).FirstOrDefault(grade => !grade.Frozen);
-
-            if (grade is not null)
-            {
-                grade.Value = value;
-            }
-            else
-            {
-                throw new ArgumentException("Error: Couldn't update grade.");
-            }
-        }
-
         private Grade HighestGrade(int examCode)
         {
-            return GradesFor(examCode).OrderBy(grade => grade.Value).First();
+            Grade? grade =  GradesFor(examCode).MaxBy(grade => grade.Value);
+
+            if (grade is null)
+            {
+                throw new ArgumentException($"Error: Couldn't find a grade with exam code: {examCode}");
+            }
+            return grade;
         }
     }
 }
