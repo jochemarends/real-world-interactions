@@ -13,7 +13,7 @@ namespace Week01
         private readonly DateTime date;
         private readonly int examCode;
         private readonly string note;
-
+        
         public decimal Value
         {
             get => value;
@@ -22,7 +22,7 @@ namespace Week01
             {
                 if (Frozen)
                 {
-                    throw new Exception("Error: Can't modify a frozen grade.");
+                    throw new Exception("Can't modify a frozen grade.");
                 }
 
                 if (!IsValidValue(value))
@@ -60,7 +60,7 @@ namespace Week01
         }
 
         public Grade(decimal value, int examCode, string note = "") : this(value, DateTime.Now, examCode, note) 
-        { 
+        {
         }
 
         public override string ToString() => $"{examCode} on {date}: {value}";

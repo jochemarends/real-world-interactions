@@ -20,8 +20,8 @@ namespace Week01
         public string FullName => $"{firstName} {lastName}";
         public DateTime BirthDate => birthDate;
         public int StudentNumber => studentNumber;
-        private List<int> ExamCodes => grades.Select(grade => grade.ExamCode).ToList();
-        private List<Grade> FinalGrades => ExamCodes.Select(examCode => HighestGrade(examCode)).ToList();
+        private IEnumerable<int> ExamCodes => grades.Select(grade => grade.ExamCode);
+        private IEnumerable<Grade> FinalGrades => ExamCodes.Select(examCode => HighestGrade(examCode)).ToList();
 
         public Student(string firstName, string lastName, DateTime birthDate, int studentNumber)
         {
@@ -74,7 +74,7 @@ namespace Week01
         }
 
         public override string ToString() => $"{FullName} ({studentNumber})";
-
+        
         private Grade HighestGrade(int examCode)
         {
             Grade? grade =  GradesFor(examCode).MaxBy(grade => grade.Value);

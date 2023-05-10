@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace Week01
     {
         private List<Student> students = new();
         private IEnumerable<int> StudentNumbers => students.Select(student => student.StudentNumber);
+
         public void AddStudent(Student student)
         {
             if (!StudentNumbers.Contains(student.StudentNumber))
@@ -20,7 +22,7 @@ namespace Week01
 
         public void Run()
         {
-            PromptMenu();
+            
         }
 
         private void PromptMenu()
@@ -29,21 +31,26 @@ namespace Week01
             Console.WriteLine("1) Add student.");
             Console.WriteLine("2) Remove student.");
             Console.WriteLine("3) Show student's grades.");
-            Console.WriteLine("4) Exit.");
+            Console.WriteLine("4) Add grade.");
+            Console.WriteLine("5) Remove grade.");
+            Console.WriteLine("6) Freeze grade.");
+            Console.WriteLine("7) Exit.");
 
             int input;
-            do
+            while (!int.TryParse(Console.ReadLine(), out input) || !IsValidInput(input))
             {
-                input = Convert.ToInt32(Console.ReadLine());
+                LogError("Invalid input");
             }
-            while (!IsValidInput(input));
 
             Console.Clear();
 
             switch (input)
             {
-                case 1:
+                case ConsoleKey.D0:
                     PromptAddStudent();
+                    break;
+                case 3:
+                    ShowGrades();
                     break;
             }
 
@@ -59,10 +66,9 @@ namespace Week01
 
         }
 
-        private void PromprRemoveStudent()
+        private void RemoveStudent()
         {
             Console.WriteLine("Enter the student number of the student you want to delete: ");
-
         }
 
         public void RemoveStudent(int studentNumber)
@@ -70,10 +76,36 @@ namespace Week01
             students.RemoveAll(student => studentNumber == student.StudentNumber);
         }
 
-        public void PrintGrades(int studentNumber)
+        private Student? GetStudent(int studentNumber) 
         {
+            return students.Find(student => student.StudentNumber == studentNumber);
+        }
+
+        public void ShowGrades()
+        {
+            int studentNumber;
+            while (!int.TryParse(Console.ReadLine(), out studentNumber))
+            {
+                LogError("Invalid input, please try again.");
+            }
+
             Student? student = students.Find(student => student.StudentNumber == studentNumber);
-            student?.PrintGrades();
+
+            if (student is null)
+            {
+                LogError($"No student was found with the student number {studentNumber}");
+            }
+            else
+            {
+                student.PrintGrades();
+            }
+        }
+
+        void LogError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
         }
     }
 }
