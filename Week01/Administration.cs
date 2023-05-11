@@ -17,7 +17,7 @@ namespace Week01
         {
             menu.AddItem("Add student.", AddStudent);
             menu.AddItem("Add grade.", AddGrade);
-            menu.AddItem("Show students", ShowStudents);
+            menu.AddItem("Show students.", ShowStudents);
             menu.AddItem("Show grades.", ShowGrades);
             menu.AddItem("Freeze grade.", FreezeGrade);
             menu.AddItem("Exit.", Exit);
@@ -133,7 +133,7 @@ namespace Week01
             WaitForKeyPress();
         }
 
-        public void Exit() => menu.Close();
+        private void Exit() => menu.Close();
 
         private Student? FindStudent(int studentNumber)
         {

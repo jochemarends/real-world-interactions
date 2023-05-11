@@ -9,7 +9,7 @@ namespace Week01
     internal class Menu
     {
         private List<(string name, Action handler)> items = new();
-        private string title;
+        private readonly string title;
         private bool shouldClose = false;
 
         public void AddItem(string name, Action handler) => items.Add((name, handler));
@@ -30,7 +30,7 @@ namespace Week01
 
         public void Close() => shouldClose = true;
 
-        int ReadOption()
+        private int ReadOption()
         {
             ConsoleKeyInfo keyInfo;
             int input;
@@ -50,7 +50,8 @@ namespace Week01
 
             foreach (int number in Enumerable.Range(1, items.Count))
             {
-                Console.WriteLine($"{number}. {items[number - 1].name}");
+                int itemIndex = number - 1;
+                Console.WriteLine($"{number}. {items[itemIndex].name}");
             }
         }
 
