@@ -20,8 +20,8 @@ namespace Week01
         public string FullName => $"{firstName} {lastName}";
         public DateTime BirthDate => birthDate;
         public int StudentNumber => studentNumber;
-        private IEnumerable<int> ExamCodes => grades.Select(grade => grade.ExamCode);
-        private IEnumerable<Grade> FinalGrades => ExamCodes.Select(examCode => HighestGrade(examCode)).ToList();
+        private IEnumerable<int> ExamCodes => from grade in grades select grade.ExamCode;
+        private IEnumerable<Grade> FinalGrades => from examCode in ExamCodes select HighestGrade(examCode);
 
         public Student(string firstName, string lastName, DateTime birthDate, int studentNumber)
         {
@@ -43,6 +43,19 @@ namespace Week01
             {
                 grades.Add(new Grade(value, examCode));
             }
+        }
+
+        public bool TrySetGrade(int examCode, decimal value)
+        {
+            try
+            {
+                SetGrade(examCode, value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
         public void PrintGrades()
@@ -81,7 +94,7 @@ namespace Week01
 
             if (grade is null)
             {
-                throw new ArgumentException($"Error: Couldn't find a grade with exam code: {examCode}");
+                throw new ArgumentException($"Couldn't find a grade with exam code {examCode}");
             }
             return grade;
         }

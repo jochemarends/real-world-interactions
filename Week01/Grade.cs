@@ -27,7 +27,7 @@ namespace Week01
 
                 if (!IsValidValue(value))
                 {
-                    throw new ArgumentException("Error: Invalid grade value.");
+                    throw new ArgumentException("Invalid grade value.");
                 }
                 this.value = value;
             }
@@ -41,9 +41,9 @@ namespace Week01
             {
                 if (frozen && value == false)
                 {
-                    throw new ArgumentException("Error: Can't unfreeze grade.");
+                    throw new ArgumentException("Can't unfreeze a grade.");
                 }
-                this.frozen = value;
+                frozen = value;
             }
         }
 
