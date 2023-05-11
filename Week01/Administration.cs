@@ -8,57 +8,6 @@ using System.Globalization;
 
 namespace Week01
 {
-    internal class Menu
-    {
-        private List<(string name, Action handler)> items = new();
-        private string title;
-        private bool shouldClose = false;
-
-        public void AddItem(string name, Action handler) => items.Add((name, handler));
-        
-        public Menu(string title) => this.title = title;
-
-        public void Run()
-        {
-            while (!shouldClose)
-            {
-                Write();
-                int index = ReadInput() - 1;
-                Console.Clear();
-                items[index].handler();
-                Console.Clear();
-            }
-        }
-
-        public void Close() => shouldClose = true;
-
-        int ReadInput()
-        {
-            ConsoleKeyInfo keyInfo;
-            int input;
-
-            do
-            {
-                keyInfo = Console.ReadKey(true);
-            } 
-            while (!int.TryParse(keyInfo.KeyChar.ToString(), out input) || !IsItem(input));
-
-            return input;
-        }
-
-        private void Write()
-        {
-            Console.WriteLine(title);
-
-            foreach(int number in Enumerable.Range(1, items.Count))
-            {
-                Console.WriteLine($"{number}. {items[number - 1].name}");
-            }
-        }
-
-        private bool IsItem(int number) => number >= 1 && number <= items.Count;
-    }
-
     internal class Administration
     {
         private readonly Menu menu = new("Grade Administration");
@@ -67,9 +16,9 @@ namespace Week01
         public Administration()
         {
             menu.AddItem("Add student.", AddStudent);
+            menu.AddItem("Add grade.", AddGrade);
             menu.AddItem("Show students", ShowStudents);
             menu.AddItem("Show grades.", ShowGrades);
-            menu.AddItem("Add grade.", AddGrade);
             menu.AddItem("Freeze grade.", FreezeGrade);
             menu.AddItem("Exit.", Exit);
         }
@@ -79,10 +28,10 @@ namespace Week01
         private void AddStudent()
         {
             Console.Write("First name: ");
-            string firstName = ReadString();
+            string firstName = ReadName();
 
             Console.Write("Last name: ");
-            string lastName = ReadString();
+            string lastName = ReadName();
 
             Console.Write("Date of birth (DD-MM-YYYY): ");
             DateTime birthDate = ReadDate();
@@ -124,11 +73,7 @@ namespace Week01
 
         private void ShowStudents()
         {
-            foreach (Student student in students)
-            {
-                Console.WriteLine(student);
-            }
-
+            students.ForEach(Console.WriteLine);
             WaitForKeyPress();
         }
 
@@ -172,7 +117,7 @@ namespace Week01
                 List<Grade> grades = student.GradesFor(examCode);
                 if (!grades.Any())
                 {
-                    WriteError($"No grade has {examCode} as exam code.");
+                    WriteError($"No grade of {student.FullName} has {examCode} as exam code.");
                 }
 
                 foreach (Grade grade in grades)
@@ -195,10 +140,10 @@ namespace Week01
             return students.Find(student => student.StudentNumber == studentNumber);
         }
 
-        private string ReadString()
+        private string ReadName()
         {
             string? input;
-            while (string.IsNullOrEmpty(input = Console.ReadLine()))
+            while (string.IsNullOrEmpty(input = Console.ReadLine()) || !input.All(char.IsLetter))
             {
                 WriteError("Invalid input. Please try again.");
             }
@@ -208,7 +153,7 @@ namespace Week01
         private int ReadInt()
         {
             int input;
-            while (!int.TryParse(Console.ReadLine(),out input))
+            while (!int.TryParse(Console.ReadLine(), out input))
             {
                 WriteError("Invalid input. Please try again.");
             }
@@ -229,7 +174,7 @@ namespace Week01
         {
             DateTime input;
             const string format = "dd-MM-yyyy";
-            while (!DateTime.TryParseExact(ReadString(), format, null, DateTimeStyles.None, out input))
+            while (!DateTime.TryParseExact(Console.ReadLine(), format, null, DateTimeStyles.None, out input))
             {
                 WriteError("Invalid input. Please try again.");
             }
