@@ -8,12 +8,16 @@ namespace Week02
 {
     internal class Menu
     {
-        private readonly string title;
-        public Menu(string title) => this.title = title;
-
         public void ShowMenu()
         {
-            Console.WriteLine(title);
+            Console.WriteLine("Reverse Polish Notation Calculator");
+            Console.WriteLine("Commands: 'h' for help.");
+            Console.WriteLine("          'o' for help.");
+        }
+
+        public void ShowOperations()
+        {
+            
         }
     }
 }
