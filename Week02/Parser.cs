@@ -32,7 +32,7 @@ namespace Week02
                 }
                 else
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException($"Failed to tokenize {@string}.");
                 }
             }
 

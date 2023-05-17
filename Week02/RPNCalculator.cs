@@ -1,19 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Week02
 {
-    internal class RPNCalculator
+    internal class RPNCalculator : IRPNCalculator
     {
-        private List<string> operators = new List<string>()
-        {
-            "+", "-", "*", "/", "sqrt"
-        };
+        public IList<Operator> operators = new List<Operator>();
+        public IList<Operator> Operators => operators;
 
-        public List<string> Operators => operators;
+        private double Add(double lhs, double rhs) => lhs + rhs;
+        private double Sub(double lhs, double rhs) => lhs - rhs;
+        private double Mul(double lhs, double rhs) => lhs * rhs;
+        private double Div(double lhs, double rhs) => lhs / rhs;
+
+        public RPNCalculator()
+        {
+            operators.Add(new BinaryOperator("+", "Addition", Add));
+            operators.Add(new BinaryOperator("-", "Subtraction", Sub));
+            operators.Add(new BinaryOperator("*", "Multiplication", Mul));
+            operators.Add(new BinaryOperator("/", "Division", Div));
+            operators.Add(new UnaryOperator("sqrt", "Square root", Math.Sqrt));
+
+            Dictionary<string, int> dict = new();
+            dict.First()
+        }
+
+        private Operator? GetOperator(string symbol)
+        {
+            return Operators.FirstOrDefault(op => op.Symbol == symbol);
+        }
 
         public void Calculate(List<Token> tokens)
         {
@@ -27,27 +46,17 @@ namespace Week02
                 }
                 else if (token.IsOperator)
                 {
-                    switch (token.Value)
+                    Operator op = GetOperator(token.Value) ?? throw new NotImplementedException($"Operator {token.Value} is not implemented.");
+
+                    if (op is UnaryOperator unaryOperator)
                     {
-                        case "+":
-                            stack.Push(stack.Pop() + stack.Pop());
-                            break;
-                        case "-":
-                            // Subtraction is not commutative.
-                            double right = stack.Pop(), left = stack.Pop();
-                            stack.Push(left - right);
-                            break;
-                        case "*":
-                            stack.Push(stack.Pop() * stack.Pop());
-                            break;
-                        case "/":
-                            // Division is not commutative.
-                            double den = stack.Pop(), num = stack.Pop();
-                            stack.Push(num / den);
-                            break;
-                        case "sqrt":
-                            stack.Push(Math.Sqrt(stack.Pop()));
-                            break;
+                        unaryOperator.Invoke(stack.Pop());
+                    }
+                    else if (op is BinaryOperator binaryOperator)
+                    {
+                        double rhs = stack.Pop();
+                        double lhs = stack.Pop();
+                        binaryOperator.Invoke(lhs, rhs);
                     }
                 }
             }
