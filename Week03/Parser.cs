@@ -17,7 +17,7 @@ namespace Week02
         {
             IList<Token> tokens = new List<Token>();
 
-            foreach (string @string in input.Split().Where(@string => !string.IsNullOrEmpty(@string)))
+            foreach (string @string in input.Split())
             {
                 if (calculator.Operators.Contains(@string))
                 {

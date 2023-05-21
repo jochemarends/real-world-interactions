@@ -4,7 +4,11 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            IRPNCalculator calculator = new RPNCalculator();
+            IParser parser = new Parser(calculator);
+            IMenu menu = new Menu(calculator.OperationsHelpText);
+            Controller controller = new Controller(calculator, parser, menu);
+            controller.Run();
         }
     }
 }

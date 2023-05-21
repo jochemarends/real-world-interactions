@@ -9,36 +9,32 @@ namespace Week02
 {
     internal class RPNCalculator : IRPNCalculator
     {
-        public IList<Operator> operators = new List<Operator>();
-        public IList<Operator> Operators => operators;
-
-        private double Add(double lhs, double rhs) => lhs + rhs;
-        private double Sub(double lhs, double rhs) => lhs - rhs;
-        private double Mul(double lhs, double rhs) => lhs * rhs;
-        private double Div(double lhs, double rhs) => lhs / rhs;
-
-        public RPNCalculator()
+        private readonly IList<string> operators = new List<string>()
         {
-            operators.Add(new BinaryOperator("+", "Addition", Add));
-            operators.Add(new BinaryOperator("-", "Subtraction", Sub));
-            operators.Add(new BinaryOperator("*", "Multiplication", Mul));
-            operators.Add(new BinaryOperator("/", "Division", Div));
-            operators.Add(new UnaryOperator("sqrt", "Square root", Math.Sqrt));
+            "+", "-", "*", "/", "^", "sqrt", "exp", "ln"
+        };
 
-            Dictionary<string, int> dict = new();
-            dict.First()
-        }
-
-        private Operator? GetOperator(string symbol)
+        private readonly IList<string> operationsHelpText = new List<string>()
         {
-            return Operators.FirstOrDefault(op => op.Symbol == symbol);
-        }
+            "Operators:",
+            "   '+' Adds two numbers.",
+            "   '-' Subtracts two numbers.",
+            "   '*' Multiplies two numbers.",
+            "   '/' Divides the first number by the second one.",
+            "   '^' Raises the first number by the power of the second one.",
+            "'sqrt' Calculates the square root of a number.",
+            " 'exp' Raises a the exponential constant by the power of a number.",
+            "  'ln' Calculates the natural logaritm of a number."
+        };
 
-        public void Calculate(List<Token> tokens)
+        public IList<string> Operators => operators;
+        public IList<string> OperationsHelpText => operationsHelpText;
+
+        public double Calculate(IList<Token> tokens)
         {
             Stack<double> stack = new Stack<double>();
 
-            foreach (Token token in tokens)
+            foreach (var token in tokens)
             {
                 if (token.IsNumber)
                 {
@@ -46,19 +42,56 @@ namespace Week02
                 }
                 else if (token.IsOperator)
                 {
-                    Operator op = GetOperator(token.Value) ?? throw new NotImplementedException($"Operator {token.Value} is not implemented.");
-
-                    if (op is UnaryOperator unaryOperator)
+                    switch (token.Value)
                     {
-                        unaryOperator.Invoke(stack.Pop());
-                    }
-                    else if (op is BinaryOperator binaryOperator)
-                    {
-                        double rhs = stack.Pop();
-                        double lhs = stack.Pop();
-                        binaryOperator.Invoke(lhs, rhs);
+                        case "+":
+                            stack.Push(Pop() + Pop());
+                            break;
+                        case "-":
+                            // Subtraction is not commutative.
+                            double rhs = Pop();
+                            double lhs = Pop();
+                            stack.Push(lhs - rhs);
+                            break;
+                        case "*":
+                            stack.Push(Pop() * Pop());
+                            break;
+                        case "/":
+                            // Division is not commutative.
+                            double den = Pop();
+                            double num = Pop();
+                            stack.Push(num / den);
+                            break;
+                        case "^":
+                            // Exponentation is not commutative.
+                            double exponent = Pop();
+                            double @base = Pop();
+                            stack.Push(Math.Pow(@base, exponent));
+                            break;
+                        case "sqrt":
+                            double operand = Pop();
+                            if (operand < 0) throw new ArgumentException("Can't take the square root of a negative number");
+                            stack.Push(Math.Sqrt(operand));
+                            break;
+                        case "exp":
+                            stack.Push(Math.Exp(Pop()));
+                            break;
+                        case "ln":
+                            stack.Push(Math.Log(Pop()));
+                            break;
+                        default:
+                            throw new NotImplementedException($"Operator {token.Value} is not implemented.");
                     }
                 }
+            }
+
+            return Pop();
+
+            double Pop()
+            {
+                if (!stack.TryPop(out double number))
+                    throw new InvalidOperationException("Too few operands are given");
+                return number;
             }
         }
     }
