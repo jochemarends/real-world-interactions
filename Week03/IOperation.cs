@@ -8,7 +8,7 @@ namespace Week03
 {
     internal interface IOperation
     {
-        string Symbol { get; }
+        string Operator { get; }
         string Info { get; }
     }
 }

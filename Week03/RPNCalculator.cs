@@ -7,19 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Week03;
 
-namespace Week02
+namespace Week03
 {
     internal class RPNCalculator : IRPNCalculator
     {
         private readonly IList<IOperation> operations = new List<IOperation>();
 
         public IList<IOperation> Operations => operations;
+        public IEnumerable<string> Operators => Operations.Select(operation => operation.Operator);
 
         public double Calculate(IList<Token> tokens)
         {
             Stack<double> stack = new Stack<double>();
 
-            foreach (var token in tokens)
+            foreach (Token token in tokens)
             {
                 if (token.IsNumber)
                 {
@@ -27,8 +28,8 @@ namespace Week02
                 }
                 else if (token.IsOperator)
                 {
-                    IOperation operation = operations.FirstOrDefault(operation => operation.Symbol.Equals(token.Value))
-                        ?? throw new NotImplementedException($"Operator {token.Value} is not implemented.");
+                    IOperation operation = operations.FirstOrDefault(operation => operation.Operator.Equals(token.Value))
+                        ?? throw new NotImplementedException($"Operator \"{token.Value}\" is not implemented.");
 
                     switch(operation)
                     {

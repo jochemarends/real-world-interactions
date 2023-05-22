@@ -9,9 +9,9 @@ namespace Week02
 
     internal class Parser : IParser
     {
-        private readonly IRPNCalculator calculator;
+        private readonly IList<string> operators;
 
-        public Parser(IRPNCalculator calculator) => this.calculator = calculator;
+        public Parser(IList<string> operators) => this.operators = operators;
 
         public IList<Token> Tokenize(string input)
         {
@@ -19,7 +19,7 @@ namespace Week02
 
             foreach (string @string in input.Split().Where(@string => !string.IsNullOrEmpty(@string)))
             {
-                if (calculator.Operators.Contains(@string))
+                if (operators.Contains(@string))
                 {
                     tokens.Add(new Token(TokenType.Operator, @string));
                 }
