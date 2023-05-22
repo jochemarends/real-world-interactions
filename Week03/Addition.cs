@@ -8,7 +8,8 @@ namespace Week03
 {
     internal class Addition : IBinaryOperation
     {
-
+        public string Operator => "+";
+        public string Info => "Adds two numbers.";
         public double Calculate(double left, double right) => left + right;
     }
 }

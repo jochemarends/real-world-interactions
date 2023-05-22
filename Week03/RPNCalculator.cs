@@ -15,9 +15,18 @@ namespace Week03
         public IList<IOperation> Operations => operations;
         public IEnumerable<string> Operators => Operations.Select(operation => operation.Operator);
 
+        public void Add(IOperation operation) => operations.Add(operation);
+
         public double Calculate(IList<Token> tokens)
         {
             Stack<double> stack = new Stack<double>();
+
+            double Pop()
+            {
+                if (!stack.TryPop(out double number))
+                    throw new InvalidOperationException("Too few operands were given");
+                return number;
+            }
 
             foreach (Token token in tokens)
             {
@@ -48,13 +57,6 @@ namespace Week03
             }
 
             return Pop();
-
-            double Pop()
-            {
-                if (!stack.TryPop(out double number))
-                    throw new InvalidOperationException("Too few operands were given");
-                return number;
-            }
         }
     }
 }

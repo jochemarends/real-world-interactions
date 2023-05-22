@@ -24,7 +24,7 @@ namespace Week02
             "   '^' Raises the first number by the power of the second one.",
             "'sqrt' Calculates the square root of a number.",
             " 'exp' Raises a the exponential constant by the power of a number.",
-            "  'ln' Calculates the natural logaritm of a number."
+            "  'ln' Calculates the natural logarithm of a number."
         };
 
         public IList<string> Operators => operators;
