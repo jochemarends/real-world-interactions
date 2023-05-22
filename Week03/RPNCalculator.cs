@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Week03
 {
-    internal class RPNCalculator : IRPNCalculator
+    internal class RPNCalculator : IRPNCalculator, ICollection<IOperation>
     {
         private readonly IList<IOperation> operations = new List<IOperation>();
 
