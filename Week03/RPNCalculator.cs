@@ -5,7 +5,6 @@ using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Week03;
 
 namespace Week03
 {
