@@ -85,6 +85,7 @@ namespace Week02
                 }
             }
 
+            if (stack.Count != 1) throw new Exception("Unused operand(s).");
             return Pop();
 
             double Pop()

@@ -87,12 +87,12 @@ namespace Week01
             {
                 Console.Write("Exam code: ");
                 int examCode = ReadInt();
-
+                
                 Console.Write("Grade value: ");
                 while (!student.TrySetGrade(examCode, ReadDecimal()))
                 {
                     WriteError("Invalid input. Please try again.");
-                    WriteInfo("A grade value must lay within the range of [1-10] and be a multiple of 0,5");
+                    WriteInfo($"A grade value must lay within the range of [1-10] and be a multiple of {0.5}");
                 }
             }
             else

@@ -8,9 +8,9 @@ namespace Week03
 {
     internal class Menu : IMenu
     {
-        private readonly IList<IOperation> operations;
+        private readonly IList<string> operationsHelpText;
 
-        public Menu(IList<IOperation> operations) => this.operations = operations;
+        public Menu(IList<string> operationsHelpText) => this.operationsHelpText = operationsHelpText;
 
         public void ShowMenu()
         {
@@ -27,13 +27,6 @@ namespace Week03
             Console.WriteLine("For example, the expression \"a + b\" is written as \"a b +\".");
         }
 
-        public void ShowOperations()
-        {
-            const int alignWidth = 6;
-            foreach (IOperation operation in operations)
-            {
-                Console.WriteLine($"{$"'{operation.Operator}'", alignWidth} {operation.Info}");
-            }
-        }
+        public void ShowOperations() => Console.WriteLine(string.Join('\n', operationsHelpText));
     }
 }

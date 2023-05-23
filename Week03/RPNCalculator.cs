@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
@@ -12,10 +13,20 @@ namespace Week03
     {
         private readonly IList<IOperation> operations = new List<IOperation>();
 
-        public IList<IOperation> Operations => operations;
-        public IEnumerable<string> Operators => Operations.Select(operation => operation.Operator);
+        public IList<string> SupportedOperators => operations.Select(operation => operation.Operator).ToList();
 
-        public void Add(IOperation operation) => operations.Add(operation);
+        public IList<string> OperationsHelpText
+        {
+            get
+            {
+                const int alignWidth = 6;
+                Func<IOperation, string> toString = operation => $"{$"'{operation.Operator}'", alignWidth} {operation.Info}";
+                return operations.Select(toString).ToList();
+            }
+        }
+
+        public int Count => operations.Count;
+        public bool IsReadOnly => operations.IsReadOnly;
 
         public double Calculate(IList<Token> tokens)
         {
@@ -24,7 +35,7 @@ namespace Week03
             double Pop()
             {
                 if (!stack.TryPop(out double number))
-                    throw new InvalidOperationException("Too few operands were given");
+                    throw new InvalidOperationException("Too few operands were given.");
                 return number;
             }
 
@@ -56,7 +67,16 @@ namespace Week03
                 }
             }
 
+            if (stack.Count != 1) throw new Exception("Unused operand(s).");
             return Pop();
         }
+
+        public void Add(IOperation item) => operations.Add(item);
+        public void Clear() => operations.Clear();
+        public bool Contains(IOperation item) => operations.Contains(item);
+        public void CopyTo(IOperation[] array, int arrayIndex) => operations.CopyTo(array, arrayIndex);
+        public IEnumerator<IOperation> GetEnumerator() => operations.GetEnumerator();
+        public bool Remove(IOperation item) => operations.Remove(item);
+        IEnumerator IEnumerable.GetEnumerator() => operations.GetEnumerator();
     }
 }

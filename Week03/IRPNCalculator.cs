@@ -8,8 +8,8 @@ namespace Week03
 {
     internal interface IRPNCalculator
     {
-        IList<IOperation> Operations { get; }
-        IEnumerable<string> Operators { get; }
+        IList<string> OperationsHelpText { get; }
+        IList<string> SupportedOperators { get; }
         double Calculate(IList<Token> tokens);
     }
 }

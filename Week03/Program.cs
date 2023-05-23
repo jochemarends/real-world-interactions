@@ -6,7 +6,7 @@ namespace Week03
     {
         static void Main(string[] args)
         {
-            IRPNCalculator calculator = new RPNCalculator();
+            RPNCalculator calculator = new RPNCalculator();
             calculator.Add(new Addition());
             calculator.Add(new Subtraction());
             calculator.Add(new Multiplication());
@@ -15,11 +15,11 @@ namespace Week03
             calculator.Add(new Sqrt());
             calculator.Add(new NaturalExponential());
             calculator.Add(new NaturalLogarithm());
-            calculator.Add(new Constant("pi", "Constant pi", Math.PI));
+            calculator.Add(new Constant("pi", "Constant pi.", Math.PI));
             calculator.Add(new Constant("e", "Constant e, also known as Euler's number.", Math.E));
 
-            IParser parser = new Parser(calculator.Operators);
-            IMenu menu = new Menu(calculator.Operations);
+            IParser parser = new Parser(calculator.SupportedOperators);
+            IMenu menu = new Menu(calculator.OperationsHelpText);
             Controller controller = new Controller(calculator, parser, menu);
             controller.Run();
         }

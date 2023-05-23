@@ -47,11 +47,21 @@ namespace Week03
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e.Message);
+                            WriteError(e.Message);
                         }
                         break;
                 }
             } while (!input.ToLower().Equals("q"));
+
+        }
+
+        private void WriteError(string message) => WriteMessage(message, ConsoleColor.Red);
+
+        private void WriteMessage(string message, ConsoleColor color)
+        {
+            (color, Console.ForegroundColor) = (Console.ForegroundColor, color);
+            Console.WriteLine(message);
+            Console.ForegroundColor = color;
         }
     }
 }

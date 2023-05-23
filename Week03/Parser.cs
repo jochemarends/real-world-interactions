@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,17 +12,17 @@ namespace Week03
 
     internal class Parser : IParser
     {
-        private readonly IEnumerable<string> operators;
+        private readonly IEnumerable<string> supportedOperators;
 
-        public Parser(IEnumerable<string> operators) => this.operators = operators;
+        public Parser(IEnumerable<string> supportedOperators) => this.supportedOperators = supportedOperators;
 
         public IList<Token> Tokenize(string input)
         {
             IList<Token> tokens = new List<Token>();
-
-            foreach (string @string in input.Split())
+            
+            foreach (string @string in input.Split().Where(@string => !string.IsNullOrEmpty(@string)))
             {
-                if (operators.Contains(@string))
+                if (supportedOperators.Contains(@string))
                 {
                     tokens.Add(new Token(TokenType.Operator, @string));
                 }
